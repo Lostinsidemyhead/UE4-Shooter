@@ -7,6 +7,7 @@
 #include "BCBaseCharacter.generated.h"
 
 class UCameraComponent;
+class USpringArmComponent;
 
 UCLASS()
 class BATTLECAT_API ABCBaseCharacter : public ACharacter
@@ -19,6 +20,9 @@ public:
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    USpringArmComponent* SpringArmComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UCameraComponent* CameraComponent;
 
     // Called when the game starts or when spawned
@@ -30,4 +34,11 @@ public:
 
     // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+    void MoveForward(float Amount);
+    void MoveRight(float Amount);
+
+    void LookUp(float Amount);
+    void TurnAround(float Amount);
 };

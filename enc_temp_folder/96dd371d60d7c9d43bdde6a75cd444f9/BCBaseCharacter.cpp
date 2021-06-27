@@ -38,8 +38,8 @@ void ABCBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
     PlayerInputComponent->BindAxis("MoveForward", this, &ABCBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ABCBaseCharacter::MoveRight);
-    PlayerInputComponent->BindAxis("LookUp", this, &ABCBaseCharacter::AddControllerPitchInput);
-    PlayerInputComponent->BindAxis("TurnAround", this, &ABCBaseCharacter::AddControllerYawInput);
+    PlayerInputComponent->BindAxis("LookUp", this, &ABCBaseCharacter::LookUp);
+    PlayerInputComponent->BindAxis("TurnAround", this, &ABCBaseCharacter::TurnAround);
 }
 
 void ABCBaseCharacter::MoveForward(float Amount)
@@ -50,4 +50,14 @@ void ABCBaseCharacter::MoveForward(float Amount)
 void ABCBaseCharacter::MoveRight(float Amount)
 {
     AddMovementInput(GetActorRightVector(), Amount);
+}
+
+void ABCBaseCharacter::LookUp(float Amount)
+{
+    AddControllerPitchInput(Amount);
+}
+
+void ABCBaseCharacter::TurnAround(float Amount)
+{
+    AddControllerYawInput(Amount);
 }
