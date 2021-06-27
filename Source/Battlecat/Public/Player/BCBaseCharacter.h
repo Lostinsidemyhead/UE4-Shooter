@@ -8,6 +8,8 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class UBCHealthComponent;
+class UTextRenderComponent;
 
 UCLASS()
 class BATTLECAT_API ABCBaseCharacter : public ACharacter
@@ -15,7 +17,6 @@ class BATTLECAT_API ABCBaseCharacter : public ACharacter
     GENERATED_BODY()
 
 public:
-    // Sets default values for this character's properties
     ABCBaseCharacter(const FObjectInitializer& ObjInit);
 
 protected:
@@ -25,14 +26,20 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UCameraComponent* CameraComponent;
 
-    // Called when the game starts or when spawned
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UBCHealthComponent* HealthComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTextRenderComponent* HealthTextComponent;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* DeathAnimMontage;
+        
     virtual void BeginPlay() override;
 
 public:
-    // Called every frame
     virtual void Tick(float DeltaTime) override;
 
-    // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
@@ -50,4 +57,6 @@ private:
 
     void OnStartRunning();
     void OnStopRunning();
+    void OnDeath();
+    void OnHealthChanged(float Health);
 };

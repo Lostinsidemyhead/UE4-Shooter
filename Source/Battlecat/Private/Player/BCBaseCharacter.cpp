@@ -5,12 +5,15 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/BCCharacterMovementComponent.h"
+#include "Components/BCHealthComponent.h"
+#include "Components/TextRenderComponent.h"
+#include "GameFramework/Controller.h"
 
-// Sets default values
+DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All)
+
 ABCBaseCharacter::ABCBaseCharacter(const FObjectInitializer& ObjInit) 
     : Super(ObjInit.SetDefaultSubobjectClass<UBCCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
-    // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
@@ -19,21 +22,36 @@ ABCBaseCharacter::ABCBaseCharacter(const FObjectInitializer& ObjInit)
 
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
+
+    HealthComponent = CreateDefaultSubobject<UBCHealthComponent>("HealthComponent");
+
+    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
+    HealthTextComponent->SetupAttachment(GetRootComponent());
 }
 
-// Called when the game starts or when spawned
 void ABCBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
+    
+    check(HealthComponent);
+    check(HealthTextComponent);
+    check(GetCharacterMovement());
+
+    OnHealthChanged(HealthComponent->GetHealth());
+    HealthComponent->OnDeath.AddUObject(this, &ABCBaseCharacter::OnDeath);
+    HealthComponent->OnHealthChanged.AddUObject(this, &ABCBaseCharacter::OnHealthChanged);
 }
 
-// Called every frame
+void ABCBaseCharacter::OnHealthChanged(float Health)
+{
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+}
+
 void ABCBaseCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 }
 
-// Called to bind functionality to input
 void ABCBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -62,6 +80,18 @@ float ABCBaseCharacter::GetMovementDirection() const
     const auto Degrees = FMath::RadiansToDegrees(AngleBetween);
 
     return  CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
+}
+
+void ABCBaseCharacter::OnDeath()
+{
+    UE_LOG(BaseCharacterLog, Display, TEXT(" %s DEAD"), *GetName());
+    PlayAnimMontage(DeathAnimMontage);
+    GetCharacterMovement()->DisableMovement();
+    SetLifeSpan(5.0f);
+    if (Controller)
+    {
+        Controller->ChangeState(NAME_Spectating);
+    }
 }
 
 void ABCBaseCharacter::MoveForward(float Amount)
