@@ -8,10 +8,11 @@
 #include "Components/BCHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Controller.h"
+#include "Weapon/BCBaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All)
 
-ABCBaseCharacter::ABCBaseCharacter(const FObjectInitializer& ObjInit) 
+ABCBaseCharacter::ABCBaseCharacter(const FObjectInitializer& ObjInit)
     : Super(ObjInit.SetDefaultSubobjectClass<UBCCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
     PrimaryActorTick.bCanEverTick = true;
@@ -32,7 +33,7 @@ ABCBaseCharacter::ABCBaseCharacter(const FObjectInitializer& ObjInit)
 void ABCBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
-    
+
     check(HealthComponent);
     check(HealthTextComponent);
     check(GetCharacterMovement());
@@ -42,6 +43,8 @@ void ABCBaseCharacter::BeginPlay()
     HealthComponent->OnHealthChanged.AddUObject(this, &ABCBaseCharacter::OnHealthChanged);
 
     LandedDelegate.AddDynamic(this, &ABCBaseCharacter::OnGroundLanded);
+
+    SpawnWeapon();
 }
 
 void ABCBaseCharacter::OnHealthChanged(float Health)
@@ -94,7 +97,7 @@ float ABCBaseCharacter::GetMovementDirection() const
     const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
     const auto Degrees = FMath::RadiansToDegrees(AngleBetween);
 
-    return  CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
+    return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
 }
 
 void ABCBaseCharacter::OnDeath()
@@ -130,4 +133,17 @@ void ABCBaseCharacter::OnStartRunning()
 void ABCBaseCharacter::OnStopRunning()
 {
     WantsToRun = false;
+}
+
+void ABCBaseCharacter::SpawnWeapon()
+{
+    if (!GetWorld()) return;
+
+    const auto Weapon = GetWorld()->SpawnActor<ABCBaseWeapon>(WeaponClass);
+
+    if (Weapon)
+    {
+        FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+        Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponPoint");
+    }
 }
