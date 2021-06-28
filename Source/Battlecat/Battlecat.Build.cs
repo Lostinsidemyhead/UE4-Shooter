@@ -17,7 +17,8 @@ public class Battlecat : ModuleRules
             "Battlecat/Public/Player",
             "Battlecat/Public/Components",
             "Battlecat/Public/Dev",
-            "Battlecat/Public/Weapon"
+            "Battlecat/Public/Weapon",
+            "Battlecat/Public/UI"
 
         });
 
