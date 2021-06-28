@@ -40,11 +40,25 @@ void ABCBaseCharacter::BeginPlay()
     OnHealthChanged(HealthComponent->GetHealth());
     HealthComponent->OnDeath.AddUObject(this, &ABCBaseCharacter::OnDeath);
     HealthComponent->OnHealthChanged.AddUObject(this, &ABCBaseCharacter::OnHealthChanged);
+
+    LandedDelegate.AddDynamic(this, &ABCBaseCharacter::OnGroundLanded);
 }
 
 void ABCBaseCharacter::OnHealthChanged(float Health)
 {
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+}
+
+void ABCBaseCharacter::OnGroundLanded(const FHitResult& Hit)
+{
+    const auto FallVelocityZ = -GetVelocity().Z;
+    UE_LOG(BaseCharacterLog, Display, TEXT("On landed: %f"), FallVelocityZ);
+
+    if (FallVelocityZ < LandedDamageVelocity.X) return;
+
+    const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
+    TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
+    UE_LOG(BaseCharacterLog, Display, TEXT("Fall damage: %f"), FinalDamage);
 }
 
 void ABCBaseCharacter::Tick(float DeltaTime)
@@ -55,6 +69,7 @@ void ABCBaseCharacter::Tick(float DeltaTime)
 void ABCBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
+    check(PlayerInputComponent);
 
     PlayerInputComponent->BindAxis("MoveForward", this, &ABCBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ABCBaseCharacter::MoveRight);
@@ -87,7 +102,7 @@ void ABCBaseCharacter::OnDeath()
     UE_LOG(BaseCharacterLog, Display, TEXT(" %s DEAD"), *GetName());
     PlayAnimMontage(DeathAnimMontage);
     GetCharacterMovement()->DisableMovement();
-    SetLifeSpan(5.0f);
+    SetLifeSpan(LifeSpanOnDeath);
     if (Controller)
     {
         Controller->ChangeState(NAME_Spectating);
