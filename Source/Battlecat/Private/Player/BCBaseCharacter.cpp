@@ -87,6 +87,7 @@ void ABCBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     PlayerInputComponent->BindAction("Run", IE_Released, this, &ABCBaseCharacter::OnStopRunning);
     PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UBCWeaponComponent::StartFire);
     PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &UBCWeaponComponent::StopFire);
+    PlayerInputComponent->BindAction("NextWeapon", IE_Released, WeaponComponent, &UBCWeaponComponent::NextWeapon);
 }
 
 bool ABCBaseCharacter::IsRunning() const
