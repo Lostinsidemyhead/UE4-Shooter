@@ -10,7 +10,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UBCHealthComponent;
 class UTextRenderComponent;
-class ABCBaseWeapon;
+class UBCWeaponComponent;
 
 UCLASS()
 class BATTLECAT_API ABCBaseCharacter : public ACharacter
@@ -33,6 +33,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTextRenderComponent* HealthTextComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UBCWeaponComponent* WeaponComponent;
+
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     UAnimMontage* DeathAnimMontage;
 
@@ -44,9 +47,6 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Damage")
     float LifeSpanOnDeath = 5.0f;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TSubclassOf<ABCBaseWeapon> WeaponClass;
 
     virtual void BeginPlay() override;
 
@@ -75,6 +75,4 @@ private:
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& Hit);
-
-    void SpawnWeapon();
 };

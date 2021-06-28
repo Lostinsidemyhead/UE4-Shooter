@@ -7,8 +7,8 @@
 #include "Components/BCCharacterMovementComponent.h"
 #include "Components/BCHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "Components/BCWeaponComponent.h"
 #include "GameFramework/Controller.h"
-#include "Weapon/BCBaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All)
 
@@ -30,6 +30,8 @@ ABCBaseCharacter::ABCBaseCharacter(const FObjectInitializer& ObjInit)
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
     HealthTextComponent->SetOwnerNoSee(true);
+
+    WeaponComponent = CreateDefaultSubobject<UBCWeaponComponent>("WeaponComponent");
 }
 
 void ABCBaseCharacter::BeginPlay()
@@ -45,8 +47,6 @@ void ABCBaseCharacter::BeginPlay()
     HealthComponent->OnHealthChanged.AddUObject(this, &ABCBaseCharacter::OnHealthChanged);
 
     LandedDelegate.AddDynamic(this, &ABCBaseCharacter::OnGroundLanded);
-
-    SpawnWeapon();
 }
 
 void ABCBaseCharacter::OnHealthChanged(float Health)
@@ -75,6 +75,7 @@ void ABCBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
     check(PlayerInputComponent);
+    check(WeaponComponent);
 
     PlayerInputComponent->BindAxis("MoveForward", this, &ABCBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ABCBaseCharacter::MoveRight);
@@ -83,6 +84,7 @@ void ABCBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABCBaseCharacter::Jump);
     PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ABCBaseCharacter::OnStartRunning);
     PlayerInputComponent->BindAction("Run", IE_Released, this, &ABCBaseCharacter::OnStopRunning);
+    PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UBCWeaponComponent::Fire);
 }
 
 bool ABCBaseCharacter::IsRunning() const
@@ -137,15 +139,3 @@ void ABCBaseCharacter::OnStopRunning()
     WantsToRun = false;
 }
 
-void ABCBaseCharacter::SpawnWeapon()
-{
-    if (!GetWorld()) return;
-
-    const auto Weapon = GetWorld()->SpawnActor<ABCBaseWeapon>(WeaponClass);
-
-    if (Weapon)
-    {
-        FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
-        Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponPoint");
-    }
-}
