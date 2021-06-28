@@ -16,7 +16,8 @@ class BATTLECAT_API UBCWeaponComponent : public UActorComponent
 public:
     UBCWeaponComponent();
 
-    void Fire();
+    void StartFire();
+    void StopFire();
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")

@@ -23,33 +23,11 @@ void ABCBaseWeapon::BeginPlay()
     check(WeaponMesh);
 }
 
-void ABCBaseWeapon::Fire()
-{
-    MakeShot();
-}
+void ABCBaseWeapon::StartFire() {}
 
-void ABCBaseWeapon::MakeShot()
-{
-    if (!GetWorld()) return;
+void ABCBaseWeapon::StopFire() {}
 
-    FVector TraceStart, TraceEnd;
-    if (!GetTraceData(TraceStart, TraceEnd)) return;
-
-    FHitResult HitResult;
-    MakeHit(HitResult, TraceStart, TraceEnd);
-
-    if (HitResult.bBlockingHit)
-    {
-        MakeDamage(HitResult);
-
-        DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
-        DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
-    }
-    else
-    {
-        DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
-    }
-}
+void ABCBaseWeapon::MakeShot() {}
 
 APlayerController* ABCBaseWeapon::GetPlayerController() const
 {
@@ -94,10 +72,3 @@ void ABCBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, co
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, CollisionParams);
 }
 
-void ABCBaseWeapon::MakeDamage(const FHitResult& HitResult)
-{
-    const auto DamagedActor = HitResult.GetActor();
-    if (!DamagedActor) return;
-
-    DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this);
-}

@@ -32,9 +32,16 @@ void UBCWeaponComponent::SpawnWeapon()
     CurrentWeapon->SetOwner(Character);
 }
 
-void UBCWeaponComponent::Fire()
+void UBCWeaponComponent::StartFire()
 {
     if (!CurrentWeapon) return;
     
-    CurrentWeapon->Fire();
+    CurrentWeapon->StartFire();
+}
+
+void UBCWeaponComponent::StopFire()
+{
+    if (!CurrentWeapon) return;
+
+    CurrentWeapon->StopFire();
 }
