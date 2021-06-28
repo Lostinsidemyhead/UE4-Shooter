@@ -120,6 +120,7 @@ void ABCBaseCharacter::OnDeath()
     }
 
     GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+    WeaponComponent->StopFire();
 }
 
 void ABCBaseCharacter::MoveForward(float Amount)

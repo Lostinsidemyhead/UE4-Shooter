@@ -16,6 +16,17 @@ void UBCWeaponComponent::BeginPlay()
     SpawnWeapons();
     EquipWeapon(CurrentWeaponIndex);
 }
+void UBCWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    CurrentWeapon = nullptr;
+    for (auto Weapon : Weapons)
+    {
+        Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+        Weapon->Destroy();
+    }
+    Weapons.Empty();
+    Super::EndPlay(EndPlayReason);
+}
 
 void UBCWeaponComponent::SpawnWeapons()
 {
@@ -48,6 +59,7 @@ void UBCWeaponComponent::EquipWeapon(int32 WeaponIndex)
 
     if (CurrentWeapon)
     {
+        CurrentWeapon->StopFire();
         AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponArmorySocketName);
     }
 
