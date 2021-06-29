@@ -7,8 +7,6 @@
 #include "BCCoreTypes.h"
 #include "BCPlayerHUDWidget.generated.h"
 
-class UBCWeaponComponent;
-
 UCLASS()
 class BATTLECAT_API UBCPlayerHUDWidget : public UUserWidget
 {
@@ -24,6 +22,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     bool GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const;
 
-private:
-    UBCWeaponComponent* GetWeaponComponent() const;
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    bool IsPlayerAlive() const;
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    bool IsPlayerSpectating() const;
 };

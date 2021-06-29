@@ -57,8 +57,6 @@ protected:
     bool IsAmmoEmpty() const;
     bool IsClipEmpry() const;
 
-    void LogAmmo();
-
 private:
     FAmmoData CurrentAmmo;
 };
