@@ -3,6 +3,9 @@
 #include "Components/BCWeaponComponent.h"
 #include "Weapon/BCBaseWeapon.h"
 #include "GameFramework/Character.h"
+#include "Animations/BCEquipFinishedAnimNotify.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All)
 
 UBCWeaponComponent::UBCWeaponComponent()
 {
@@ -13,6 +16,8 @@ void UBCWeaponComponent::BeginPlay()
 {
     Super::BeginPlay();
 
+    CurrentWeaponIndex = 0;
+    InitAnimations();
     SpawnWeapons();
     EquipWeapon(CurrentWeaponIndex);
 }
@@ -65,11 +70,13 @@ void UBCWeaponComponent::EquipWeapon(int32 WeaponIndex)
 
     CurrentWeapon = Weapons[WeaponIndex];
     AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponEquipSocketName);
+    EquipAnimInProgress = true;
+    PlayAnimMontage(EquipAnimMontage);
 }
 
 void UBCWeaponComponent::StartFire()
 {
-    if (!CurrentWeapon) return;
+    if (!CanFire()) return;
 
     CurrentWeapon->StartFire();
 }
@@ -83,6 +90,49 @@ void UBCWeaponComponent::StopFire()
 
 void UBCWeaponComponent::NextWeapon()
 {
+    if (!CanEquip()) return;
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
     EquipWeapon(CurrentWeaponIndex);
+}
+
+void UBCWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
+{
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    if (!Character || !GetWorld()) return;
+
+    Character->PlayAnimMontage(Animation);
+}
+
+void UBCWeaponComponent::InitAnimations()
+{
+    if (!EquipAnimMontage) return;
+
+    const auto NotifyEvents = EquipAnimMontage->Notifies;
+    for (auto NotifyEvent : NotifyEvents)
+    {
+        auto EquipFinishedNotify = Cast<UBCEquipFinishedAnimNotify>(NotifyEvent.Notify);
+        if (EquipFinishedNotify)
+        {
+            EquipFinishedNotify->OnNotified.AddUObject(this, &UBCWeaponComponent::OnEquipFinished);
+            break;
+        }
+    }
+}
+
+void UBCWeaponComponent::OnEquipFinished(USkeletalMeshComponent* MeshComponent)
+{
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    if (!Character || Character->GetMesh() != MeshComponent) return;
+
+    EquipAnimInProgress = false;
+}
+
+bool UBCWeaponComponent::CanFire() const
+{
+    return CurrentWeapon && !EquipAnimInProgress;
+}
+
+bool UBCWeaponComponent::CanEquip() const
+{
+    return !EquipAnimInProgress;
 }
