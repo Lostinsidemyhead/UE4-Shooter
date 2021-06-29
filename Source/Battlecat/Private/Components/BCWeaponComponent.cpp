@@ -197,3 +197,13 @@ void UBCWeaponComponent::ChangeClip()
     ReloadAnimInProgress = true;
     PlayAnimMontage(CurrentReloadAnimMontage);
 }
+
+bool UBCWeaponComponent::GetWeaponUIData(FWeaponUIData& UIData) const
+{
+    if (CurrentWeapon)
+    {
+        UIData = CurrentWeapon->GetUIData();
+        return true;
+    }
+    return false;
+}

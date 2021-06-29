@@ -3,12 +3,24 @@
 
 #include "UI/BCGameHUD.h"
 #include "Engine/Canvas.h"
+#include "Blueprint/UserWidget.h"
 
 void ABCGameHUD::DrawHUD()
 {
     Super::DrawHUD();
 
-    DrawCrossHair();
+    //DrawCrossHair();
+}
+
+void ABCGameHUD::BeginPlay()
+{
+    Super::BeginPlay();
+
+    auto PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass);
+    if (PlayerHUDWidget)
+    {
+        PlayerHUDWidget->AddToViewport();
+    }
 }
 
 void ABCGameHUD::DrawCrossHair()
