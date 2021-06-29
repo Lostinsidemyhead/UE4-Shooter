@@ -4,12 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "BCCoreTypes.h"
 #include "BCHealthComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float);
-
-    UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent)) class BATTLECAT_API UBCHealthComponent : public UActorComponent
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent)) class BATTLECAT_API UBCHealthComponent : public UActorComponent
 {
     GENERATED_BODY()
 
