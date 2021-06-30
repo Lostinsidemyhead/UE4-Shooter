@@ -42,6 +42,7 @@ void ABCBaseCharacter::BeginPlay()
     check(HealthComponent);
     check(HealthTextComponent);
     check(GetCharacterMovement());
+    check(GetMesh());
 
     OnHealthChanged(HealthComponent->GetHealth());
     HealthComponent->OnDeath.AddUObject(this, &ABCBaseCharacter::OnDeath);
@@ -109,7 +110,8 @@ float ABCBaseCharacter::GetMovementDirection() const
 void ABCBaseCharacter::OnDeath()
 {
     UE_LOG(BaseCharacterLog, Display, TEXT(" %s DEAD"), *GetName());
-    PlayAnimMontage(DeathAnimMontage);
+    
+    //PlayAnimMontage(DeathAnimMontage);
     GetCharacterMovement()->DisableMovement();
     SetLifeSpan(LifeSpanOnDeath);
 
@@ -120,6 +122,9 @@ void ABCBaseCharacter::OnDeath()
 
     GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
     WeaponComponent->StopFire();
+
+    GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    GetMesh()->SetSimulatePhysics(true);
 }
 
 void ABCBaseCharacter::MoveForward(float Amount)

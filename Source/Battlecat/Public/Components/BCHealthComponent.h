@@ -7,7 +7,9 @@
 #include "BCCoreTypes.h"
 #include "BCHealthComponent.generated.h"
 
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent)) class BATTLECAT_API UBCHealthComponent : public UActorComponent
+
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+class BATTLECAT_API UBCHealthComponent : public UActorComponent
 {
     GENERATED_BODY()
 
@@ -44,6 +46,7 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
     float HealModifier = 5.0f;
 
+
     virtual void BeginPlay() override;
 
 private:
@@ -51,8 +54,7 @@ private:
     FTimerHandle HealTimerHandle;
 
     UFUNCTION()
-    void OnTakeAnyDamage(
-        AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+    void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
     void HealUpdate();
     void SetHealth(float NewHealth);
