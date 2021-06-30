@@ -2,11 +2,11 @@
 
 #include "Components/BCHealthComponent.h"
 #include "GameFramework/Actor.h"
-//#include "GameFramework/Pawn.h"
-//#include "GameFramework/Controller.h"
+#include "GameFramework/Pawn.h"
+#include "GameFramework/Controller.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
-//#include "Camera/CameraShake.h"
+#include "Camera/CameraShake.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
 
@@ -46,7 +46,7 @@ void UBCHealthComponent::OnTakeAnyDamage(
     {
         GetWorld()->GetTimerManager().SetTimer(HealTimerHandle, this, &UBCHealthComponent::HealUpdate, HealUpdateTime, true, HealDelay);
     }
-
+    PlayCameraShake();
 }
 
 void UBCHealthComponent::HealUpdate()
@@ -76,4 +76,17 @@ bool UBCHealthComponent::TryToAddHealth(float HealthAmount)
 bool UBCHealthComponent::IsHealthFull() const
 {
     return FMath::IsNearlyEqual(Health, MaxHealth);
+}
+
+void UBCHealthComponent::PlayCameraShake()
+{
+    if (IsDead()) return;
+
+    const auto Player = Cast<APawn>(GetOwner());
+    if (!Player) return;
+
+    const auto Controller = Player->GetController<APlayerController>();
+    if (!Controller || !Controller->PlayerCameraManager) return;
+
+    Controller->PlayerCameraManager->StartCameraShake(CameraShake);
 }
