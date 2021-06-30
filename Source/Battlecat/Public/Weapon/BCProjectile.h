@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
+class UBCWeaponFXComponent;
 
 UCLASS()
 class BATTLECAT_API ABCProjectile : public AActor
@@ -37,6 +38,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     float LifeSeconds = 10.0f;
+
+    UPROPERTY(VisibleAnywhere, Category = "VFX")
+    UBCWeaponFXComponent* WeaponFXComponent;
 
     virtual void BeginPlay() override;
 

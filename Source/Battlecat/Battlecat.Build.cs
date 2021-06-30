@@ -8,7 +8,15 @@ public class Battlecat : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+        PublicDependencyModuleNames.AddRange(new string[] 
+        { 
+            "Core", 
+            "CoreUObject", 
+            "Engine", 
+            "InputCore",
+            "Niagara",
+            "PhysicsCore"
+        });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
 
@@ -20,7 +28,8 @@ public class Battlecat : ModuleRules
             "Battlecat/Public/Weapon",
             "Battlecat/Public/UI",
             "Battlecat/Public/Animations",
-            "Battlecat/Public/Pickups"
+            "Battlecat/Public/Pickups",
+            "Battlecat/Public/Weapon/Components"
         });
 
         // Uncomment if you are using Slate UI
