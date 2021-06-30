@@ -19,7 +19,8 @@ public class Battlecat : ModuleRules
             "Battlecat/Public/Dev",
             "Battlecat/Public/Weapon",
             "Battlecat/Public/UI",
-            "Battlecat/Public/Animations"
+            "Battlecat/Public/Animations",
+            "Battlecat/Public/Pickups"
         });
 
         // Uncomment if you are using Slate UI

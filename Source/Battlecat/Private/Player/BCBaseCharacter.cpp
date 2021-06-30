@@ -58,13 +58,11 @@ void ABCBaseCharacter::OnHealthChanged(float Health)
 void ABCBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 {
     const auto FallVelocityZ = -GetVelocity().Z;
-    UE_LOG(BaseCharacterLog, Display, TEXT("On landed: %f"), FallVelocityZ);
 
     if (FallVelocityZ < LandedDamageVelocity.X) return;
 
     const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
     TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
-    UE_LOG(BaseCharacterLog, Display, TEXT("Fall damage: %f"), FinalDamage);
 }
 
 void ABCBaseCharacter::Tick(float DeltaTime)

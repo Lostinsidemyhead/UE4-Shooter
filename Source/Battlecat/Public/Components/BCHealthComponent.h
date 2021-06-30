@@ -25,6 +25,9 @@ public:
 
     float GetHealth() const { return Health; }
 
+    bool TryToAddHealth(float HealthAmount);
+    bool IsHealthFull() const;
+
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0", ClampMax = "1000.0"))
     float MaxHealth = 100.0f;
@@ -32,13 +35,13 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
     bool AutoHeal = true;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
     float HealUpdateTime = 1.0f;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
     float HealDelay = 5.0f;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
     float HealModifier = 5.0f;
 
     virtual void BeginPlay() override;

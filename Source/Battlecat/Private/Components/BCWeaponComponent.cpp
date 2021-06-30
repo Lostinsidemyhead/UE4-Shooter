@@ -184,9 +184,24 @@ bool UBCWeaponComponent::CanReload() const
     return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress && CurrentWeapon->CanReload();
 }
 
-void UBCWeaponComponent::OnEmptyClip()
+void UBCWeaponComponent::OnEmptyClip(ABCBaseWeapon* AmmoEmptyWeapon)
 {
-    ChangeClip();
+    if (!AmmoEmptyWeapon) return;
+
+    if (CurrentWeapon == AmmoEmptyWeapon)
+    {
+        ChangeClip();
+    }
+    else
+    {
+        for (const auto Weapon : Weapons)
+        {
+            if (Weapon == AmmoEmptyWeapon)
+            {
+                Weapon->ChangeClip();
+            }
+        }
+    }
 }
 
 void UBCWeaponComponent::ChangeClip()
@@ -214,6 +229,17 @@ bool UBCWeaponComponent::GetWeaponAmmoData(FAmmoData& AmmoData) const
     {
         AmmoData = CurrentWeapon->GetAmmoData();
         return true;
+    }
+    return false;
+}
+
+bool UBCWeaponComponent::TryToAddAmmo(TSubclassOf<ABCBaseWeapon> WeaponType, int32 ClipsAmount) {
+    for (const auto Weapon : Weapons)
+    {
+        if (Weapon && Weapon->IsA(WeaponType))
+        {
+            return Weapon->TryToAddAmmo(ClipsAmount);
+        }
     }
     return false;
 }
