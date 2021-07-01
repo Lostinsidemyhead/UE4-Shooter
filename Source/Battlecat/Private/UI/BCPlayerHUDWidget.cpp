@@ -5,6 +5,25 @@
 #include "Components/BCWeaponComponent.h"
 #include "BCUtils.h"
 
+bool UBCPlayerHUDWidget::Initialize()
+{
+    const auto HealthComponent = BCUtils::GetBCPlayerComponent<UBCHealthComponent>(GetOwningPlayerPawn());
+    if (HealthComponent)
+    {
+        HealthComponent->OnHealthChanged.AddUObject(this, &UBCPlayerHUDWidget::OnHealthChanged);
+    }
+
+    return Super::Initialize();
+}
+
+void UBCPlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
+{
+    if (HealthDelta < 0.0f)
+    {
+        OnTakeDamage();
+    }
+}
+
 float UBCPlayerHUDWidget::GetHealthPercent() const
 {
     const auto HealthComponent = BCUtils::GetBCPlayerComponent<UBCHealthComponent>(GetOwningPlayerPawn());

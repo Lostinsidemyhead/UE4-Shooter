@@ -44,14 +44,14 @@ void ABCBaseCharacter::BeginPlay()
     check(GetCharacterMovement());
     check(GetMesh());
 
-    OnHealthChanged(HealthComponent->GetHealth());
+    OnHealthChanged(HealthComponent->GetHealth(), 0.0f);
     HealthComponent->OnDeath.AddUObject(this, &ABCBaseCharacter::OnDeath);
     HealthComponent->OnHealthChanged.AddUObject(this, &ABCBaseCharacter::OnHealthChanged);
 
     LandedDelegate.AddDynamic(this, &ABCBaseCharacter::OnGroundLanded);
 }
 
-void ABCBaseCharacter::OnHealthChanged(float Health)
+void ABCBaseCharacter::OnHealthChanged(float Health, float HealthDelta)
 {
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
