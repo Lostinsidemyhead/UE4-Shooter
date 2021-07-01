@@ -4,6 +4,7 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "Weapon/Components/BCWeaponFXComponent.h"
+#include "NiagaraComponent.h"
 
 ABCRifleWeapon::ABCRifleWeapon()
 {
@@ -19,6 +20,7 @@ void ABCRifleWeapon::BeginPlay()
 
 void ABCRifleWeapon::StartFire()
 {
+    InitMuzzleFX();
     GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &ABCRifleWeapon::MakeShot, TimeBetweenShots, true);
     MakeShot();
 }
@@ -26,6 +28,7 @@ void ABCRifleWeapon::StartFire()
 void ABCRifleWeapon::StopFire()
 {
     GetWorldTimerManager().ClearTimer(ShotTimerHandle);
+    SetMuzzleFXVisibility(false);
 }
 
 void ABCRifleWeapon::MakeShot()
@@ -51,12 +54,12 @@ void ABCRifleWeapon::MakeShot()
         MakeDamage(HitResult);
 
         //(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
-        //DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
+        // DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
         WeaponFXComponent->PlayImpactFX(HitResult);
     }
     else
     {
-        //DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
+        // DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
     }
 
     DecreaseAmmo();
@@ -81,4 +84,22 @@ void ABCRifleWeapon::MakeDamage(const FHitResult& HitResult)
     if (!DamagedActor) return;
 
     DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this);
+}
+
+void ABCRifleWeapon::InitMuzzleFX()
+{
+    if (!MuzzleFXComponent)
+    {
+        MuzzleFXComponent = SpawnMuzzleFX();
+    }
+    SetMuzzleFXVisibility(true);
+}
+
+void ABCRifleWeapon::SetMuzzleFXVisibility(bool Visible)
+{
+    if (MuzzleFXComponent)
+    {
+        MuzzleFXComponent->SetPaused(!Visible);
+        MuzzleFXComponent->SetVisibility(Visible, true);
+    }
 }

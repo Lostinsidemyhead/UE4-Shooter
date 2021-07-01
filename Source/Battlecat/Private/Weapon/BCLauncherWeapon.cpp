@@ -32,4 +32,5 @@ void ABCLauncherWeapon::MakeShot()
     }
 
     DecreaseAmmo();
+    SpawnMuzzleFX();
 }

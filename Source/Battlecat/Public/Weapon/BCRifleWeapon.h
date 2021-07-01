@@ -7,6 +7,7 @@
 #include "BCRifleWeapon.generated.h"
 
 class UBCWeaponFXComponent;
+class UNiagaraComponent;
 
 UCLASS()
 class BATTLECAT_API ABCRifleWeapon : public ABCBaseWeapon
@@ -39,5 +40,11 @@ protected:
 
 private:
     FTimerHandle ShotTimerHandle;
+
+    UPROPERTY()
+    UNiagaraComponent* MuzzleFXComponent;
+
     void MakeDamage(const FHitResult& HitResult);
+    void InitMuzzleFX();
+    void SetMuzzleFXVisibility(bool Visible);
 };

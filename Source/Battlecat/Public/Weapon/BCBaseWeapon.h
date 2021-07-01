@@ -8,6 +8,8 @@
 #include "BCBaseWeapon.generated.h"
 
 class USkeletalMeshComponent;
+class UNiagaraSystem;
+class UNiagaraComponent;
 
 UCLASS()
 class BATTLECAT_API ABCBaseWeapon : public AActor
@@ -46,6 +48,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     FWeaponUIData UIData;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    UNiagaraSystem* MuzzleFX;
+
     virtual void BeginPlay() override;
 
     virtual void MakeShot();
@@ -60,6 +65,7 @@ protected:
     bool IsClipEmpry() const;
     bool IsAmmoFull() const;
 
+    UNiagaraComponent* SpawnMuzzleFX();
 
 private:
     FAmmoData CurrentAmmo;
