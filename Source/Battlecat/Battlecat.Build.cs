@@ -33,7 +33,8 @@ public class Battlecat : ModuleRules
             "Battlecat/Public/Pickups",
             "Battlecat/Public/Weapon/Components",
             "Battlecat/Public/AI",
-            "Battlecat/Public/AI/Tasks"
+            "Battlecat/Public/AI/Tasks",
+            "Battlecat/Public/AI/Services"
         });
 
         // Uncomment if you are using Slate UI
