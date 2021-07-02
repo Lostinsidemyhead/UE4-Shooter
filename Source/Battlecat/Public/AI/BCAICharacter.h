@@ -6,9 +6,8 @@
 #include "Player/BCBaseCharacter.h"
 #include "BCAICharacter.generated.h"
 
-/**
- *
- */
+class UBehaviorTree;
+
 UCLASS()
 class BATTLECAT_API ABCAICharacter : public ABCBaseCharacter
 {
@@ -16,4 +15,7 @@ class BATTLECAT_API ABCAICharacter : public ABCBaseCharacter
 
 public:
     ABCAICharacter(const FObjectInitializer& ObjInit);
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
+    UBehaviorTree* BehaviorTreeAsset;
 };

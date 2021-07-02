@@ -4,7 +4,7 @@ class BCUtils
 {
 public:
     template <typename T>
-    static T* GetBCPlayerComponent(APawn* PlayerPawn)
+    static T* GetBCPlayerComponent(AActor* PlayerPawn)
     {
         if (!PlayerPawn) return nullptr;
 
