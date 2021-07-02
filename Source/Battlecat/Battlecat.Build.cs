@@ -15,7 +15,9 @@ public class Battlecat : ModuleRules
             "Engine", 
             "InputCore",
             "Niagara",
-            "PhysicsCore"
+            "PhysicsCore",
+            "GameplayTasks",
+            "NavigationSystem"
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
@@ -29,7 +31,9 @@ public class Battlecat : ModuleRules
             "Battlecat/Public/UI",
             "Battlecat/Public/Animations",
             "Battlecat/Public/Pickups",
-            "Battlecat/Public/Weapon/Components"
+            "Battlecat/Public/Weapon/Components",
+            "Battlecat/Public/AI",
+            "Battlecat/Public/AI/Tasks"
         });
 
         // Uncomment if you are using Slate UI
