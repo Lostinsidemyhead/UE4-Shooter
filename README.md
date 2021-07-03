@@ -1,0 +1,1 @@
+A project to create a shooter on Unreal Engine 4. The game used some assets (character and weapon models, animations) from the educational project "Shooter Game" by Epic Games.
