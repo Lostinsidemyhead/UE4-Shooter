@@ -124,13 +124,13 @@ void ABCBaseWeapon::ChangeClip()
     {
         if (CurrentAmmo.Clips == 0)
         {
-            UE_LOG(LogBaseWeapon, Warning, TEXT("-------No more clips-------"));
+            //UE_LOG(LogBaseWeapon, Warning, TEXT("-------No more clips-------"));
             return;
         }
         CurrentAmmo.Clips--;
     }
     CurrentAmmo.Bullets = DefaultAmmo.Bullets;
-    UE_LOG(LogBaseWeapon, Display, TEXT("-------Change Clip-------"));
+    //UE_LOG(LogBaseWeapon, Display, TEXT("-------Change Clip-------"));
 }
 
 bool ABCBaseWeapon::CanReload() const

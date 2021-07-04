@@ -5,11 +5,12 @@
 #include "Components/BCAIPerceptionComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-
 ABCAIController::ABCAIController()
 {
     BCAIPerceptionComponent = CreateDefaultSubobject<UBCAIPerceptionComponent>("BCPerceptionComponent");
     SetPerceptionComponent(*BCAIPerceptionComponent);
+
+    bWantsPlayerState = true;
 }
 
 void ABCAIController::OnPossess(APawn* InPawn)

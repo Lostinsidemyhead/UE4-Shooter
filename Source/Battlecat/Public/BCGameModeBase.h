@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "BCCoreTypes.h"
 #include "BCGameModeBase.generated.h"
 
-/**
- *
- */
+class AAIController;
+
 UCLASS()
 class BATTLECAT_API ABCGameModeBase : public AGameModeBase
 {
@@ -16,4 +16,30 @@ class BATTLECAT_API ABCGameModeBase : public AGameModeBase
 
 public:
     ABCGameModeBase();
+
+    virtual void StartPlay() override;
+    virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
+
+
+protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game")
+    TSubclassOf<AAIController> AIControllerClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game")
+    TSubclassOf<APawn> AIPawnClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game")
+    FGameData GameData;
+
+private:
+    int32 CurrentRound = 1;
+    int32 RoundCountDown = 0;
+    FTimerHandle GameRoundTimerHandle;
+
+    void SpawnBots();
+    void StartRound();
+    void GameTimerUpdate();
+
+    void ResetPlayers();
+    void ResetOnePlayer(AController* Controller);
 };

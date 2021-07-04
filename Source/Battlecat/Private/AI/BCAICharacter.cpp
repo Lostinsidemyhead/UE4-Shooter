@@ -9,7 +9,7 @@
 ABCAICharacter::ABCAICharacter(const FObjectInitializer& ObjInit)
     : Super(ObjInit.SetDefaultSubobjectClass<UBCAIWeaponComponent>("WeaponComponent"))
 {
-    AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+    AutoPossessAI = EAutoPossessAI::Disabled;
     AIControllerClass = ABCAIController::StaticClass();
 
     bUseControllerRotationYaw = false;
