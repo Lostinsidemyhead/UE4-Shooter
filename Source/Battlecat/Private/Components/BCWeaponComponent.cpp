@@ -243,3 +243,15 @@ bool UBCWeaponComponent::TryToAddAmmo(TSubclassOf<ABCBaseWeapon> WeaponType, int
     }
     return false;
 }
+
+bool UBCWeaponComponent::NeedAmmo(TSubclassOf<ABCBaseWeapon> WeaponType)
+{
+    for (const auto Weapon : Weapons)
+    {
+        if (Weapon && Weapon->IsA(WeaponType))
+        {
+            return !Weapon->IsAmmoFull();
+        }
+    }
+    return false;
+}

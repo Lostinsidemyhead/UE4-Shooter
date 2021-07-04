@@ -26,6 +26,7 @@ public:
     bool GetWeaponAmmoData(FAmmoData& AmmoData) const;
 
     bool TryToAddAmmo(TSubclassOf<ABCBaseWeapon> WeaponType, int32 ClipsAmount);
+    bool NeedAmmo(TSubclassOf<ABCBaseWeapon> WeaponType);
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
