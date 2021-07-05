@@ -7,13 +7,22 @@
 
 bool UBCPlayerHUDWidget::Initialize()
 {
-    const auto HealthComponent = BCUtils::GetBCPlayerComponent<UBCHealthComponent>(GetOwningPlayerPawn());
-    if (HealthComponent)
+    if (GetOwningPlayer())
     {
-        HealthComponent->OnHealthChanged.AddUObject(this, &UBCPlayerHUDWidget::OnHealthChanged);
+        GetOwningPlayer()->GetOnNewPawnNotifier().AddUObject(this, &UBCPlayerHUDWidget::OnNewPawn);
+        OnNewPawn(GetOwningPlayerPawn());
     }
 
     return Super::Initialize();
+}
+
+void UBCPlayerHUDWidget::OnNewPawn(APawn* NewPawn)
+{
+    const auto HealthComponent = BCUtils::GetBCPlayerComponent<UBCHealthComponent>(NewPawn);
+    if (HealthComponent && !HealthComponent->OnHealthChanged.IsBoundToObject(this))
+    {
+        HealthComponent->OnHealthChanged.AddUObject(this, &UBCPlayerHUDWidget::OnHealthChanged);
+    }
 }
 
 void UBCPlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)

@@ -1,12 +1,8 @@
 // Battlecat Game. All Rights Reserved.
 
 #include "Player/BCBaseCharacter.h"
-#include "Camera/CameraComponent.h"
-#include "Components/InputComponent.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Components/BCCharacterMovementComponent.h"
 #include "Components/BCHealthComponent.h"
-#include "Components/TextRenderComponent.h"
 #include "Components/BCWeaponComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Controller.h"
@@ -18,20 +14,7 @@ ABCBaseCharacter::ABCBaseCharacter(const FObjectInitializer& ObjInit)
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
-    SpringArmComponent->SetupAttachment(GetRootComponent());
-    SpringArmComponent->bUsePawnControlRotation = true;
-    SpringArmComponent->SocketOffset = FVector(0.0f, 100.0f, 80.0f);
-
-    CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
-    CameraComponent->SetupAttachment(SpringArmComponent);
-
     HealthComponent = CreateDefaultSubobject<UBCHealthComponent>("HealthComponent");
-
-    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
-    HealthTextComponent->SetupAttachment(GetRootComponent());
-    HealthTextComponent->SetOwnerNoSee(true);
-
     WeaponComponent = CreateDefaultSubobject<UBCWeaponComponent>("WeaponComponent");
 }
 
@@ -40,7 +23,6 @@ void ABCBaseCharacter::BeginPlay()
     Super::BeginPlay();
 
     check(HealthComponent);
-    check(HealthTextComponent);
     check(GetCharacterMovement());
     check(GetMesh());
 
@@ -53,7 +35,6 @@ void ABCBaseCharacter::BeginPlay()
 
 void ABCBaseCharacter::OnHealthChanged(float Health, float HealthDelta)
 {
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
 void ABCBaseCharacter::OnGroundLanded(const FHitResult& Hit)
@@ -71,28 +52,9 @@ void ABCBaseCharacter::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void ABCBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-    Super::SetupPlayerInputComponent(PlayerInputComponent);
-    check(PlayerInputComponent);
-    check(WeaponComponent);
-
-    PlayerInputComponent->BindAxis("MoveForward", this, &ABCBaseCharacter::MoveForward);
-    PlayerInputComponent->BindAxis("MoveRight", this, &ABCBaseCharacter::MoveRight);
-    PlayerInputComponent->BindAxis("LookUp", this, &ABCBaseCharacter::AddControllerPitchInput);
-    PlayerInputComponent->BindAxis("TurnAround", this, &ABCBaseCharacter::AddControllerYawInput);
-    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABCBaseCharacter::Jump);
-    PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ABCBaseCharacter::OnStartRunning);
-    PlayerInputComponent->BindAction("Run", IE_Released, this, &ABCBaseCharacter::OnStopRunning);
-    PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UBCWeaponComponent::StartFire);
-    PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &UBCWeaponComponent::StopFire);
-    PlayerInputComponent->BindAction("NextWeapon", IE_Released, WeaponComponent, &UBCWeaponComponent::NextWeapon);
-    PlayerInputComponent->BindAction("Reload", IE_Released, WeaponComponent, &UBCWeaponComponent::Reload);
-}
-
 bool ABCBaseCharacter::IsRunning() const
 {
-    return WantsToRun && IsMovingForward && !GetVelocity().IsZero();
+    return false;
 }
 
 float ABCBaseCharacter::GetMovementDirection() const
@@ -115,39 +77,11 @@ void ABCBaseCharacter::OnDeath()
     GetCharacterMovement()->DisableMovement();
     SetLifeSpan(LifeSpanOnDeath);
 
-    if (Controller)
-    {
-        Controller->ChangeState(NAME_Spectating);
-    }
-
     GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
     WeaponComponent->StopFire();
 
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     GetMesh()->SetSimulatePhysics(true);
-}
-
-void ABCBaseCharacter::MoveForward(float Amount)
-{
-    IsMovingForward = Amount > 0.0f;
-    if (Amount == 0.0f) return;
-    AddMovementInput(GetActorForwardVector(), Amount);
-}
-
-void ABCBaseCharacter::MoveRight(float Amount)
-{
-    if (Amount == 0.0f) return;
-    AddMovementInput(GetActorRightVector(), Amount);
-}
-
-void ABCBaseCharacter::OnStartRunning()
-{
-    WantsToRun = true;
-}
-
-void ABCBaseCharacter::OnStopRunning()
-{
-    WantsToRun = false;
 }
 
 void ABCBaseCharacter::SetPlayerColor(const FLinearColor& Color)
