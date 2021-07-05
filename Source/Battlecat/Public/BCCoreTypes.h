@@ -2,7 +2,7 @@
 
 #include "BCCoreTypes.generated.h"
 
-//WEAPON...
+// WEAPON...
 class ABCBaseWeapon;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature, ABCBaseWeapon*);
@@ -47,12 +47,12 @@ struct FWeaponUIData
 };
 //...WEAPON
 
-//HEALTH...
+// HEALTH...
 DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHealthChanged, float, float);
 //...HEALTH
 
-//VFX...
+// VFX...
 class UNiagaraSystem;
 
 USTRUCT(BlueprintType)
@@ -86,7 +86,7 @@ struct FImpactData
 };
 //...VFX
 
-//GAME...
+// GAME...
 USTRUCT(BlueprintType)
 struct FGameData
 {
@@ -94,13 +94,13 @@ struct FGameData
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "1", ClampMax = "100"))
     int32 PlayersNum = 2;
-    
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "1", ClampMax = "10"))
     int32 RoundsNum = 4;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "3", ClampMax = "600"))
     int32 RoundTime = 10;
-    
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game")
     FLinearColor DefaultTeamColor = FLinearColor::Red;
 
@@ -110,5 +110,16 @@ struct FGameData
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "1", ClampMax = "20"))
     int32 RespawnTime = 5;
 };
+
+UENUM(BlueprintType)
+enum class EBCMatchState : uint8
+{
+    WaitingToStart = 0,
+    InProgress,
+    Pause,
+    GameOver
+};
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateChangedSignature, EBCMatchState);
 
 //...GAME

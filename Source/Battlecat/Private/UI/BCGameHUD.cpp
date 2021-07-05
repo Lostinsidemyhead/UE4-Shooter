@@ -1,26 +1,63 @@
 // Battlecat Game. All Rights Reserved.
 
-
 #include "UI/BCGameHUD.h"
 #include "Engine/Canvas.h"
 #include "Blueprint/UserWidget.h"
+#include "BCGameModeBase.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogBCGameHUD, All, All);
 
 void ABCGameHUD::DrawHUD()
 {
     Super::DrawHUD();
 
-    //DrawCrossHair();
+    // DrawCrossHair();
 }
 
 void ABCGameHUD::BeginPlay()
 {
     Super::BeginPlay();
 
-    auto PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass);
-    if (PlayerHUDWidget)
+    GameWidgets.Add(EBCMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
+    GameWidgets.Add(EBCMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
+
+    for (auto GameWidgetPair : GameWidgets)
     {
-        PlayerHUDWidget->AddToViewport();
+        const auto GameWidget = GameWidgetPair.Value;
+        if (!GameWidget) continue;
+
+        GameWidget->AddToViewport();
+        GameWidget->SetVisibility(ESlateVisibility::Hidden);
     }
+
+    if (GetWorld())
+    {
+        const auto GameMode = Cast<ABCGameModeBase>(GetWorld()->GetAuthGameMode());
+        if (GameMode)
+        {
+            GameMode->OnMatchStateChanged.AddUObject(this, &ABCGameHUD::OnMatchStateChanged);
+        }
+    }
+}
+
+void ABCGameHUD::OnMatchStateChanged(EBCMatchState State)
+{
+    if (CurrentWidget)
+    {
+        CurrentWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
+
+    if (GameWidgets.Contains(State))
+    {
+        CurrentWidget = GameWidgets[State];
+    }
+
+    if (CurrentWidget)
+    {
+        CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+    }
+
+    UE_LOG(LogBCGameHUD, Display, TEXT("Match state changed: %s"), *UEnum::GetValueAsString(State));
 }
 
 void ABCGameHUD::DrawCrossHair()

@@ -31,6 +31,7 @@ void ABCGameModeBase::StartPlay()
 
     CurrentRound = 1;
     StartRound();
+    SetMatchState(EBCMatchState::InProgress);
 }
 
 UClass* ABCGameModeBase::GetDefaultPawnClassForController_Implementation(AController* InController)
@@ -134,8 +135,6 @@ FLinearColor ABCGameModeBase::DetermineColorByTeamID(int32 TeamID) const
 
 void ABCGameModeBase::SetPlayerColor(AController* Controller)
 {
-    UE_LOG(LogTemp, Display, TEXT("COLOR"));
-
     if (!Controller) return;
 
     const auto Character = Cast<ABCBaseCharacter>(Controller->GetPawn());
@@ -210,4 +209,34 @@ void ABCGameModeBase::GameOver()
             Pawn->DisableInput(nullptr);
         }
     }
+    SetMatchState(EBCMatchState::GameOver);
+}
+
+void ABCGameModeBase::SetMatchState(EBCMatchState State)
+{
+    if (MatchState == State) return;
+
+    MatchState = State;
+    OnMatchStateChanged.Broadcast(MatchState);
+}
+
+bool ABCGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
+{
+    const auto PauseSet = Super::SetPause(PC, CanUnpauseDelegate);
+    if (PauseSet)
+    {
+        SetMatchState(EBCMatchState::Pause);
+    }
+
+    return PauseSet;
+}
+
+bool ABCGameModeBase::ClearPause()
+{
+    const auto PauseCleared = Super::ClearPause();
+    if (PauseCleared)
+    {
+        SetMatchState(EBCMatchState::InProgress);
+    }
+    return PauseCleared;
 }

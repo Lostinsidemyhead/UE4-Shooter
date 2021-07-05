@@ -17,6 +17,8 @@ class BATTLECAT_API ABCGameModeBase : public AGameModeBase
 public:
     ABCGameModeBase();
 
+    FOnMatchStateChangedSignature OnMatchStateChanged;
+
     virtual void StartPlay() override;
     virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 
@@ -27,6 +29,9 @@ public:
     int32 GetRoundSecondsRemaining() const { return RoundCountDown; }
 
     void RespawnRequest(AController* Controller);
+
+    virtual bool SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate = FCanUnpause()) override;
+    virtual bool ClearPause() override;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game")
@@ -39,6 +44,7 @@ protected:
     FGameData GameData;
 
 private:
+    EBCMatchState MatchState = EBCMatchState::WaitingToStart;
     int32 CurrentRound = 1;
     int32 RoundCountDown = 0;
     FTimerHandle GameRoundTimerHandle;
@@ -59,4 +65,6 @@ private:
     void StartRespawn(AController* Controller);
 
     void GameOver();
+
+    void SetMatchState(EBCMatchState State);
 };
