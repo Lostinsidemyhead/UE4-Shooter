@@ -82,7 +82,7 @@ void ABCRifleWeapon::MakeDamage(const FHitResult& HitResult)
     const auto DamagedActor = HitResult.GetActor();
     if (!DamagedActor) return;
 
-    DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this);
+    DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetController(), this);
 }
 
 void ABCRifleWeapon::InitMuzzleFX()
@@ -111,4 +111,10 @@ void ABCRifleWeapon::SpawnTraceFX(const FVector& TraceStart, const FVector& Trac
     {
         TraceFXComponent->SetNiagaraVariableVec3(TraceTargetName, TraceEnd);
     }
+}
+
+AController* ABCRifleWeapon::GetController() const
+{
+    const auto Pawn = Cast<APawn>(GetOwner());
+    return Pawn ? Pawn->GetController() : nullptr;
 }

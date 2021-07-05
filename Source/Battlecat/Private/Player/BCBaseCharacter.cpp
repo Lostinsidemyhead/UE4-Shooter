@@ -110,8 +110,8 @@ float ABCBaseCharacter::GetMovementDirection() const
 void ABCBaseCharacter::OnDeath()
 {
     UE_LOG(BaseCharacterLog, Display, TEXT(" %s DEAD"), *GetName());
-    
-    //PlayAnimMontage(DeathAnimMontage);
+
+    // PlayAnimMontage(DeathAnimMontage);
     GetCharacterMovement()->DisableMovement();
     SetLifeSpan(LifeSpanOnDeath);
 
@@ -150,3 +150,10 @@ void ABCBaseCharacter::OnStopRunning()
     WantsToRun = false;
 }
 
+void ABCBaseCharacter::SetPlayerColor(const FLinearColor& Color)
+{
+    const auto MaterialInst = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
+    if (!MaterialInst) return;
+
+    MaterialInst->SetVectorParameterValue(MaterialColorName, Color);
+}

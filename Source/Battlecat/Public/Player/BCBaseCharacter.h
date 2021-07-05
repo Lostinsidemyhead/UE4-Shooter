@@ -48,6 +48,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Damage")
     float LifeSpanOnDeath = 5.0f;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Material")
+    FName MaterialColorName = "Paint Color";
+
     virtual void BeginPlay() override;
     virtual void OnDeath();
 
@@ -61,6 +64,8 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
     float GetMovementDirection() const;
+
+    void SetPlayerColor(const FLinearColor& Color);
 
 private:
     bool WantsToRun = false;

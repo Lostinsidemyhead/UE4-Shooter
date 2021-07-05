@@ -35,14 +35,6 @@ void ABCBaseWeapon::StopFire() {}
 
 void ABCBaseWeapon::MakeShot() {}
 
-APlayerController* ABCBaseWeapon::GetPlayerController() const
-{
-    const auto Player = Cast<ACharacter>(GetOwner());
-    if (!Player) return nullptr;
-
-    return Player->GetController<APlayerController>();
-}
-
 bool ABCBaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const
 {
     const auto BCCharacter = Cast<ACharacter>(GetOwner());
@@ -50,7 +42,7 @@ bool ABCBaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRota
 
     if (BCCharacter->IsPlayerControlled())
     {
-        const auto Controller = GetPlayerController();
+        const auto Controller = BCCharacter->GetController<APlayerController>();
         if (!Controller) return false;
 
         Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);

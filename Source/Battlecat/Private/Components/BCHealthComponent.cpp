@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "Camera/CameraShake.h"
+#include "BCGameModeBase.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
 
@@ -40,6 +41,7 @@ void UBCHealthComponent::OnTakeAnyDamage(
 
     if (IsDead())
     {
+        Killed(InstigatedBy);
         OnDeath.Broadcast();
     }
     else if (AutoHeal)
@@ -63,7 +65,7 @@ void UBCHealthComponent::SetHealth(float NewHealth)
 {
     const auto NextHealth = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
     const auto HealthDelta = NextHealth - Health;
-    
+
     Health = NextHealth;
     OnHealthChanged.Broadcast(Health, HealthDelta);
 }
@@ -92,4 +94,17 @@ void UBCHealthComponent::PlayCameraShake()
     if (!Controller || !Controller->PlayerCameraManager) return;
 
     Controller->PlayerCameraManager->StartCameraShake(CameraShake);
+}
+
+void UBCHealthComponent::Killed(AController* KillerController)
+{
+    if (!GetWorld()) return;
+
+    const auto GameMode = Cast<ABCGameModeBase>(GetWorld()->GetAuthGameMode());
+    if (!GameMode) return;
+
+    const auto Player = Cast<APawn>(GetOwner());
+    const auto VictimController = Player ? Player->Controller : nullptr;
+
+    GameMode->Killed(KillerController, VictimController);
 }
