@@ -3,12 +3,15 @@
 #include "AI/BCAIController.h"
 #include "AI/BCAICharacter.h"
 #include "Components/BCAIPerceptionComponent.h"
+#include "Components/BCRespawnComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 ABCAIController::ABCAIController()
 {
     BCAIPerceptionComponent = CreateDefaultSubobject<UBCAIPerceptionComponent>("BCPerceptionComponent");
     SetPerceptionComponent(*BCAIPerceptionComponent);
+
+    RespawnComponent = CreateDefaultSubobject<UBCRespawnComponent>("RespawnComponent");
 
     bWantsPlayerState = true;
 }

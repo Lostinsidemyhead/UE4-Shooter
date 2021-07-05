@@ -7,6 +7,7 @@
 #include "BCAIController.generated.h"
 
 class UBCAIPerceptionComponent;
+class UBCRespawnComponent;
 
 UCLASS()
 class BATTLECAT_API ABCAIController : public AAIController
@@ -19,6 +20,9 @@ public:
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UBCAIPerceptionComponent* BCAIPerceptionComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UBCRespawnComponent* RespawnComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
     FName FocusOnKeyName = "EnemyActor";

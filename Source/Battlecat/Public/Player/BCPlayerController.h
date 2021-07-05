@@ -6,12 +6,17 @@
 #include "GameFramework/PlayerController.h"
 #include "BCPlayerController.generated.h"
 
-/**
- * 
- */
+class UBCRespawnComponent;
+
 UCLASS()
 class BATTLECAT_API ABCPlayerController : public APlayerController
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
+public:
+    ABCPlayerController();
+
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UBCRespawnComponent* RespawnComponent;
 };

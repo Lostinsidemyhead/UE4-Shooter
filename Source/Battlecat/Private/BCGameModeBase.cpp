@@ -6,8 +6,13 @@
 #include "UI/BCGameHUD.h"
 #include "AIController.h"
 #include "Player/BCPlayerState.h"
+#include "BCUtils.h"
+#include "Components/BCRespawnComponent.h"
+#include "EngineUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBCGameModeBase, All, All);
+
+constexpr static int32 MinRoundTimeForRespawn = 5;
 
 ABCGameModeBase::ABCGameModeBase()
 {
@@ -72,9 +77,7 @@ void ABCGameModeBase::GameTimerUpdate()
         }
         else
         {
-            UE_LOG(LogBCGameModeBase, Display, TEXT("------------GAME OVER------------"));
-
-            LogPlayerInfo();
+            GameOver();
         }
     }
 }
@@ -158,6 +161,8 @@ void ABCGameModeBase::Killed(AController* KillerController, AController* VictimC
     {
         VictimPlayerState->AddDeath();
     }
+
+    StartRespawn(VictimController);
 }
 
 void ABCGameModeBase::LogPlayerInfo()
@@ -173,5 +178,36 @@ void ABCGameModeBase::LogPlayerInfo()
         if (!PlayerState) continue;
 
         PlayerState->LogInfo();
+    }
+}
+
+void ABCGameModeBase::RespawnRequest(AController* Controller)
+{
+    ResetOnePlayer(Controller);
+}
+
+void ABCGameModeBase::StartRespawn(AController* Controller)
+{
+    const auto RespawnAvailable = RoundCountDown > MinRoundTimeForRespawn + GameData.RespawnTime;
+    if (!RespawnAvailable) return;
+
+    const auto RespawnComponent = BCUtils::GetBCPlayerComponent<UBCRespawnComponent>(Controller);
+    if (!RespawnComponent) return;
+
+    RespawnComponent->Respawn(GameData.RespawnTime);
+}
+
+void ABCGameModeBase::GameOver()
+{
+    UE_LOG(LogBCGameModeBase, Display, TEXT("------------GAME OVER------------"));
+    LogPlayerInfo();
+
+    for (auto Pawn : TActorRange<APawn>(GetWorld()))
+    {
+        if (Pawn)
+        {
+            Pawn->TurnOff();
+            Pawn->DisableInput(nullptr);
+        }
     }
 }

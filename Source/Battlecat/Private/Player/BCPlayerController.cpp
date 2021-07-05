@@ -2,4 +2,9 @@
 
 
 #include "Player/BCPlayerController.h"
+#include "Components/BCRespawnComponent.h"
 
+ABCPlayerController::ABCPlayerController()
+{
+    RespawnComponent = CreateDefaultSubobject<UBCRespawnComponent>("RespawnComponent");
+}
