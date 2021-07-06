@@ -36,7 +36,7 @@ public class Battlecat : ModuleRules
             "Battlecat/Public/AI/Tasks",
             "Battlecat/Public/AI/Services",
             "Battlecat/Public/AI/EQS",
-            "Battlecat/Public/AI/EQS/Decorators",
+            "Battlecat/Public/AI/Decorators",
             "Battlecat/Public/Menu",
             "Battlecat/Public/Menu/UI"
         });

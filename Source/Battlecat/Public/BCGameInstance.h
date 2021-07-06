@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "BCCoreTypes.h"
 #include "BCGameInstance.generated.h"
 
 UCLASS()
@@ -12,13 +13,20 @@ class BATTLECAT_API UBCGameInstance : public UGameInstance
     GENERATED_BODY()
 
 public:
-    FName GetStartupLevelName() const { return StartupLevelName; }    
-    FName GetMenuLevelName() const { return MenuLevelName; }    
+    FLevelData GetStartupLevel() const { return StartupLevel; }
+    void SetStartupLevel(const FLevelData& Data) { StartupLevel = Data; }
+
+    TArray<FLevelData> GetLevelsData() const { return LevelsData; }
+
+    FName GetMenuLevelName() const { return MenuLevelName; }
 
 protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Game")
-    FName StartupLevelName = NAME_None;
+    UPROPERTY(EditDefaultsOnly, Category = "Game", meta = (Tooltip = "Level names must be unique!"))
+    TArray<FLevelData> LevelsData;
 
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     FName MenuLevelName = NAME_None;
+
+private:
+    FLevelData StartupLevel;
 };

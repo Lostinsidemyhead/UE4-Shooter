@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "BCGameInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Components/HorizontalBox.h"
+#include "Menu/UI/BCLevelItemWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBCMenuWidget, All, All);
 
@@ -21,26 +23,75 @@ void UBCMenuWidget::NativeOnInitialized()
     {
         QuitGameButton->OnClicked.AddDynamic(this, &UBCMenuWidget::OnQuitGame);
     }
+
+    InitLevelItems();
+}
+
+void UBCMenuWidget::InitLevelItems()
+{
+    const auto BCGameInstance = GetBCGameInstance();
+    if (!BCGameInstance) return;
+
+    checkf(BCGameInstance->GetLevelsData().Num() != 0, TEXT("Levels data must not be empty!"));
+
+    if (!LevelItemsBox) return;
+    LevelItemsBox->ClearChildren();
+
+    for (auto LevelData : BCGameInstance->GetLevelsData())
+    {
+        const auto LevelItemWidget = CreateWidget<UBCLevelItemWidget>(GetWorld(), LevelItemWidgetClass);
+        if (!LevelItemWidget) continue;
+
+        LevelItemWidget->SetLevelData(LevelData);
+        LevelItemWidget->OnLevelSelected.AddUObject(this, &UBCMenuWidget::OnLevelSelected);
+
+        LevelItemsBox->AddChild(LevelItemWidget);
+        LevelItemWidgets.Add(LevelItemWidget);
+    }
+
+    if (BCGameInstance->GetStartupLevel().LevelName.IsNone())
+    {
+        OnLevelSelected(BCGameInstance->GetLevelsData()[0]);
+    }
+    else
+    {
+        OnLevelSelected(BCGameInstance->GetStartupLevel());
+    }
+}
+
+void UBCMenuWidget::OnLevelSelected(const FLevelData& Data)
+{
+    const auto BCGameInstance = GetBCGameInstance();
+    if (!BCGameInstance) return;
+
+    BCGameInstance->SetStartupLevel(Data);
+
+    for(auto LevelItemWidget:LevelItemWidgets)
+    {
+        if (LevelItemWidget)
+        {
+            const auto IsSelected = Data.LevelName == LevelItemWidget->GetLevelData().LevelName;
+            LevelItemWidget->SetSelected(IsSelected);
+        }
+    }
 }
 
 void UBCMenuWidget::OnStartGame()
 {
-    if (!GetWorld()) return;
-
-    const auto BCGameInstance = GetWorld()->GetGameInstance<UBCGameInstance>();
+    const auto BCGameInstance = GetBCGameInstance();
     if (!BCGameInstance) return;
 
-    if (BCGameInstance->GetStartupLevelName().IsNone())
-    {
 
-        UE_LOG(LogBCMenuWidget, Error, TEXT("Level name is NONE"));
-        return;
-    }
-
-    UGameplayStatics::OpenLevel(this, BCGameInstance->GetStartupLevelName());
+    UGameplayStatics::OpenLevel(this, BCGameInstance->GetStartupLevel().LevelName);
 }
 
 void UBCMenuWidget::OnQuitGame()
 {
     UKismetSystemLibrary::QuitGame(this, GetOwningPlayer(), EQuitPreference::Quit, true);
+}
+
+UBCGameInstance* UBCMenuWidget::GetBCGameInstance() const
+{
+    if (!GetWorld()) return nullptr;
+    return GetWorld()->GetGameInstance<UBCGameInstance>();
 }
