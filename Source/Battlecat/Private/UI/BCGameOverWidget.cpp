@@ -6,9 +6,13 @@
 #include "UI/BCPlayerStatRowWidget.h"
 #include "Components/VerticalBox.h"
 #include "BCUtils.h"
+#include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
 
-bool UBCGameOverWidget::Initialize()
+void UBCGameOverWidget::NativeOnInitialized()
 {
+    Super::NativeOnInitialized();
+
     if (GetWorld())
     {
         const auto GameMode = Cast<ABCGameModeBase>(GetWorld()->GetAuthGameMode());
@@ -17,7 +21,11 @@ bool UBCGameOverWidget::Initialize()
             GameMode->OnMatchStateChanged.AddUObject(this, &UBCGameOverWidget::OnMatchStateChanged);
         }
     }
-    return Super::Initialize();
+
+    if (ResetLevelButton)
+    {
+        ResetLevelButton->OnClicked.AddDynamic(this, &UBCGameOverWidget::OnResetLevel);
+    }
 }
 
 void UBCGameOverWidget::OnMatchStateChanged(EBCMatchState State)
@@ -53,4 +61,11 @@ void UBCGameOverWidget::UpdatePlayerStat()
 
         PlayerStatBox->AddChild(PlayerStatRowWidget);
     }
+}
+
+void UBCGameOverWidget::OnResetLevel()
+{  
+    // Hard reset
+    const FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(this);
+    UGameplayStatics::OpenLevel(this, FName(CurrentLevelName));   
 }

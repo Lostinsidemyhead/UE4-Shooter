@@ -5,15 +5,15 @@
 #include "Components/BCWeaponComponent.h"
 #include "BCUtils.h"
 
-bool UBCPlayerHUDWidget::Initialize()
+void UBCPlayerHUDWidget::NativeOnInitialized()
 {
+    Super::NativeOnInitialized();
+
     if (GetOwningPlayer())
     {
         GetOwningPlayer()->GetOnNewPawnNotifier().AddUObject(this, &UBCPlayerHUDWidget::OnNewPawn);
         OnNewPawn(GetOwningPlayerPawn());
     }
-
-    return Super::Initialize();
 }
 
 void UBCPlayerHUDWidget::OnNewPawn(APawn* NewPawn)
