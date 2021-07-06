@@ -1,6 +1,8 @@
 // Battlecat Game. All Rights Reserved.
 
 #include "Menu/BCMenuPlayerController.h"
+#include "BCGameInstance.h"
+
 
 void ABCMenuPlayerController::BeginPlay()
 {

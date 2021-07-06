@@ -3,6 +3,9 @@
 #include "Menu/UI/BCMenuWidget.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "BCGameInstance.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogBCMenuWidget, All, All);
 
 void UBCMenuWidget::NativeOnInitialized()
 {
@@ -16,6 +19,17 @@ void UBCMenuWidget::NativeOnInitialized()
 
 void UBCMenuWidget::OnStartGame()
 {
-    const FName StartupLevelName = "TestLevel";
-    UGameplayStatics::OpenLevel(this, StartupLevelName);
+    if (!GetWorld()) return;
+
+    const auto BCGameInstance = GetWorld()->GetGameInstance<UBCGameInstance>();
+    if (!BCGameInstance) return;
+
+    if (BCGameInstance->GetStartupLevelName().IsNone())
+    {
+
+        UE_LOG(LogBCMenuWidget, Error, TEXT("Level name is NONE"));
+        return;
+    }
+
+    UGameplayStatics::OpenLevel(this, BCGameInstance->GetStartupLevelName());
 }
