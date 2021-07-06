@@ -35,7 +35,10 @@ public class Battlecat : ModuleRules
             "Battlecat/Public/AI",
             "Battlecat/Public/AI/Tasks",
             "Battlecat/Public/AI/Services",
-            "Battlecat/Public/AI/EQS"
+            "Battlecat/Public/AI/EQS",
+            "Battlecat/Public/AI/EQS/Decorators",
+            "Battlecat/Public/Menu",
+            "Battlecat/Public/Menu/UI"
         });
 
         // Uncomment if you are using Slate UI
