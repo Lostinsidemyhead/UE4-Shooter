@@ -4,6 +4,7 @@
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "BCGameInstance.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBCMenuWidget, All, All);
 
@@ -14,6 +15,11 @@ void UBCMenuWidget::NativeOnInitialized()
     if (StartGameButton)
     {
         StartGameButton->OnClicked.AddDynamic(this, &UBCMenuWidget::OnStartGame);
+    }
+
+    if (QuitGameButton)
+    {
+        QuitGameButton->OnClicked.AddDynamic(this, &UBCMenuWidget::OnQuitGame);
     }
 }
 
@@ -32,4 +38,9 @@ void UBCMenuWidget::OnStartGame()
     }
 
     UGameplayStatics::OpenLevel(this, BCGameInstance->GetStartupLevelName());
+}
+
+void UBCMenuWidget::OnQuitGame()
+{
+    UKismetSystemLibrary::QuitGame(this, GetOwningPlayer(), EQuitPreference::Quit, true);
 }
