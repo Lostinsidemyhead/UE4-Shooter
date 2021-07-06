@@ -7,6 +7,8 @@
 #include "BCCoreTypes.h"
 #include "BCPlayerHUDWidget.generated.h"
 
+class UProgressBar;
+
 UCLASS()
 class BATTLECAT_API UBCPlayerHUDWidget : public UUserWidget
 {
@@ -31,10 +33,26 @@ public:
     UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void OnTakeDamage();
 
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    int32 GetKillsNum() const;
+
 protected:
+    UPROPERTY(meta = (BindWidget))
+    UProgressBar* HealthProgressBar;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    float PercentColorThreshold = 0.3f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    FLinearColor GoodColor = FLinearColor::White;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    FLinearColor BadColor = FLinearColor::Red;
+
     virtual void NativeOnInitialized() override;
 
 private:
     void OnHealthChanged(float Health, float HealthDelta);
     void OnNewPawn(APawn* NewPawn);
+    void UpdateHealthBar(); 
 };

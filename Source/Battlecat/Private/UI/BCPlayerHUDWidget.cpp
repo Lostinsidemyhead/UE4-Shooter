@@ -4,6 +4,8 @@
 #include "Components/BCHealthComponent.h"
 #include "Components/BCWeaponComponent.h"
 #include "BCUtils.h"
+#include "Components/ProgressBar.h"
+#include "Player/BCPlayerState.h"
 
 void UBCPlayerHUDWidget::NativeOnInitialized()
 {
@@ -23,6 +25,7 @@ void UBCPlayerHUDWidget::OnNewPawn(APawn* NewPawn)
     {
         HealthComponent->OnHealthChanged.AddUObject(this, &UBCPlayerHUDWidget::OnHealthChanged);
     }
+    UpdateHealthBar();
 }
 
 void UBCPlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
@@ -31,6 +34,8 @@ void UBCPlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
     {
         OnTakeDamage();
     }
+
+    UpdateHealthBar();
 }
 
 float UBCPlayerHUDWidget::GetHealthPercent() const
@@ -67,4 +72,21 @@ bool UBCPlayerHUDWidget::IsPlayerSpectating() const
 {
     const auto Controller = GetOwningPlayer();
     return Controller && Controller->GetStateName() == NAME_Spectating;
+}
+
+int32 UBCPlayerHUDWidget::GetKillsNum() const
+{
+    const auto Controller = GetOwningPlayer();
+    if (!Controller) return 0;
+
+    const auto PlayerState = Cast<ABCPlayerState>(Controller->PlayerState);
+    return PlayerState ? PlayerState->GetKillsNum() : 0;
+}
+
+void UBCPlayerHUDWidget::UpdateHealthBar()
+{
+    if (HealthProgressBar)
+    {
+        HealthProgressBar->SetFillColorAndOpacity(GetHealthPercent() > PercentColorThreshold ? GoodColor : BadColor);
+    }
 }

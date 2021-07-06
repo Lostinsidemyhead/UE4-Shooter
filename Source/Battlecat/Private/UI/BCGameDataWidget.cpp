@@ -4,12 +4,6 @@
 #include "BCGameModeBase.h"
 #include "Player/BCPlayerState.h"
 
-int32 UBCGameDataWidget::GetKillsNum() const
-{
-    const auto PlayerState = GetBCPlayerState();
-    return PlayerState ? PlayerState->GetKillsNum() : 0;
-}
-
 int32 UBCGameDataWidget::GetCurrentRoundNum() const
 {
     const auto GameMode = GetBCGameMode();

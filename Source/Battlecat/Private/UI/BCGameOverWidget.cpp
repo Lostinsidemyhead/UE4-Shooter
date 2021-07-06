@@ -58,6 +58,7 @@ void UBCGameOverWidget::UpdatePlayerStat()
         PlayerStatRowWidget->SetDeaths(BCUtils::TextFromInt(PlayerState->GetDeathNum()));
         PlayerStatRowWidget->SetTeam(BCUtils::TextFromInt(PlayerState->GetTeamID()));
         PlayerStatRowWidget->SetPlayerIndicatorVisibility(Controller->IsPlayerController());
+        PlayerStatRowWidget->SetTeamColor(PlayerState->GetTeamColor());
 
         PlayerStatBox->AddChild(PlayerStatRowWidget);
     }
