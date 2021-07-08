@@ -12,6 +12,8 @@ void UBCLevelItemWidget::NativeOnInitialized()
     if (LevelSelectButton)
     {
         LevelSelectButton->OnClicked.AddDynamic(this, &UBCLevelItemWidget::OnLevelItemClicked);
+        LevelSelectButton->OnHovered.AddDynamic(this, &UBCLevelItemWidget::OnLevelItemHover);
+        LevelSelectButton->OnUnhovered.AddDynamic(this, &UBCLevelItemWidget::OnLevelItemUnhover);
     }
 }
 
@@ -37,8 +39,24 @@ void UBCLevelItemWidget::SetLevelData(const FLevelData& Data)
 
 void UBCLevelItemWidget::SetSelected(bool IsSelected)
 {
+    if (LevelImage)
+    {
+        LevelImage->SetColorAndOpacity(IsSelected ? FLinearColor::Red : FLinearColor::White);
+    }
+}
+
+void UBCLevelItemWidget::OnLevelItemHover()
+{
     if (FrameImage)
     {
-        FrameImage->SetVisibility(IsSelected ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+        FrameImage->SetVisibility(ESlateVisibility::Visible);
+    }
+}
+
+void UBCLevelItemWidget::OnLevelItemUnhover()
+{
+    if (FrameImage)
+    {
+        FrameImage->SetVisibility(ESlateVisibility::Hidden);
     }
 }

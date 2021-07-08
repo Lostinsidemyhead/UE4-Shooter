@@ -90,3 +90,19 @@ void UBCPlayerHUDWidget::UpdateHealthBar()
         HealthProgressBar->SetFillColorAndOpacity(GetHealthPercent() > PercentColorThreshold ? GoodColor : BadColor);
     }
 }
+
+FString UBCPlayerHUDWidget::FormatBullets(int32 BulletsNum) const
+{
+    const int32 MaxLen = 3;
+    const TCHAR PrefixSymbol = '0';
+
+    auto BulletStr = FString::FromInt(BulletsNum);
+    const auto SymbolsNumToAdd = MaxImmutableSamplers - BulletStr.Len();
+
+    if (SymbolsNumToAdd > 0)
+    {
+        BulletStr = FString::ChrN(SymbolsNumToAdd, PrefixSymbol).Append(BulletStr);
+    }
+
+    return BulletStr;
+}
