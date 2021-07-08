@@ -7,6 +7,9 @@
 UEnvQueryTest_PickupCouldBeTaken::UEnvQueryTest_PickupCouldBeTaken(const FObjectInitializer& ObjectInitializer)  //
     : Super(ObjectInitializer)
 {
+    Cost = EEnvTestCost::Low;
+    ValidItemType = UEnvQueryItemType_ActorBase::StaticClass();
+    SetWorkOnFloatValues(false);
 }
 
 void UEnvQueryTest_PickupCouldBeTaken::RunTest(FEnvQueryInstance& QueryInstance) const
