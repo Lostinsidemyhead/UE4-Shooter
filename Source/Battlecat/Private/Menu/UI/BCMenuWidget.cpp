@@ -78,6 +78,12 @@ void UBCMenuWidget::OnLevelSelected(const FLevelData& Data)
 
 void UBCMenuWidget::OnStartGame()
 {
+    const auto BCGameInstance = GetBCGameInstance();
+    if (!BCGameInstance) return;
+
+    const auto LevelName = (BCGameInstance->GetStartupLevel().LevelName).ToString();
+    if (LevelName == "Name") return;
+
     PlayAnimation(HideAnimation);
 }
 
