@@ -66,7 +66,7 @@ void UBCMenuWidget::OnLevelSelected(const FLevelData& Data)
 
     BCGameInstance->SetStartupLevel(Data);
 
-    for(auto LevelItemWidget:LevelItemWidgets)
+    for (auto LevelItemWidget : LevelItemWidgets)
     {
         if (LevelItemWidget)
         {
@@ -78,9 +78,15 @@ void UBCMenuWidget::OnLevelSelected(const FLevelData& Data)
 
 void UBCMenuWidget::OnStartGame()
 {
+    PlayAnimation(HideAnimation);
+}
+
+void UBCMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation* Animation)
+{
+    if (Animation != HideAnimation) return;
+
     const auto BCGameInstance = GetBCGameInstance();
     if (!BCGameInstance) return;
-
 
     UGameplayStatics::OpenLevel(this, BCGameInstance->GetStartupLevel().LevelName);
 }
