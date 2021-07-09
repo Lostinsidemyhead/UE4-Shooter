@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/BCBaseWidget.h"
 #include "BCPauseWidget.generated.h"
 
 class UButton;
 
 UCLASS()
-class BATTLECAT_API UBCPauseWidget : public UUserWidget
+class BATTLECAT_API UBCPauseWidget : public UBCBaseWidget
 {
     GENERATED_BODY()
 

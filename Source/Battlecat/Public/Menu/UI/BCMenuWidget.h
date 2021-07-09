@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/BCBaseWidget.h"
 #include "BCCoreTypes.h"
 #include "BCMenuWidget.generated.h"
 
@@ -13,7 +13,7 @@ class UBCGameInstance;
 class UBCLevelItemWidget;
 
 UCLASS()
-class BATTLECAT_API UBCMenuWidget : public UUserWidget
+class BATTLECAT_API UBCMenuWidget : public UBCBaseWidget
 {
     GENERATED_BODY()
 

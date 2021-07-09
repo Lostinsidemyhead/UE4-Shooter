@@ -2,7 +2,7 @@
 
 #include "UI/BCGameHUD.h"
 #include "Engine/Canvas.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/BCBaseWidget.h"
 #include "BCGameModeBase.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBCGameHUD, All, All);
@@ -18,9 +18,9 @@ void ABCGameHUD::BeginPlay()
 {
     Super::BeginPlay();
 
-    GameWidgets.Add(EBCMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
-    GameWidgets.Add(EBCMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
-    GameWidgets.Add(EBCMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
+    GameWidgets.Add(EBCMatchState::InProgress, CreateWidget<UBCBaseWidget>(GetWorld(), PlayerHUDWidgetClass));
+    GameWidgets.Add(EBCMatchState::Pause, CreateWidget<UBCBaseWidget>(GetWorld(), PauseWidgetClass));
+    GameWidgets.Add(EBCMatchState::GameOver, CreateWidget<UBCBaseWidget>(GetWorld(), GameOverWidgetClass));
 
     for (auto GameWidgetPair : GameWidgets)
     {
@@ -56,6 +56,7 @@ void ABCGameHUD::OnMatchStateChanged(EBCMatchState State)
     if (CurrentWidget)
     {
         CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+        CurrentWidget->Show();
     }
 
     UE_LOG(LogBCGameHUD, Display, TEXT("Match state changed: %s"), *UEnum::GetValueAsString(State));

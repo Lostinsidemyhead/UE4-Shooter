@@ -7,6 +7,8 @@
 #include "BCCoreTypes.h"
 #include "BCGameHUD.generated.h"
 
+class UBCBaseWidget;
+
 UCLASS()
 class BATTLECAT_API ABCGameHUD : public AHUD
 {
@@ -29,10 +31,10 @@ protected:
 
 private:
     UPROPERTY()
-    TMap<EBCMatchState, UUserWidget*> GameWidgets;
+    TMap<EBCMatchState, UBCBaseWidget*> GameWidgets;
 
     UPROPERTY()
-    UUserWidget* CurrentWidget = nullptr;
+    UBCBaseWidget* CurrentWidget = nullptr;
 
     void DrawCrossHair();
     void OnMatchStateChanged(EBCMatchState State);

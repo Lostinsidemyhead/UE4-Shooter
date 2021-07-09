@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/BCBaseWidget.h"
 #include "BCCoreTypes.h"
 #include "BCGameOverWidget.generated.h"
 
@@ -11,7 +11,7 @@ class UVerticalBox;
 class UButton;
 
 UCLASS()
-class BATTLECAT_API UBCGameOverWidget : public UUserWidget
+class BATTLECAT_API UBCGameOverWidget : public UBCBaseWidget
 {
     GENERATED_BODY()
 

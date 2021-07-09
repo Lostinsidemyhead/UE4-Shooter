@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/BCBaseWidget.h"
 #include "BCCoreTypes.h"
 #include "BCPlayerHUDWidget.generated.h"
 
 class UProgressBar;
 
 UCLASS()
-class BATTLECAT_API UBCPlayerHUDWidget : public UUserWidget
+class BATTLECAT_API UBCPlayerHUDWidget : public UBCBaseWidget
 {
     GENERATED_BODY()
 
@@ -43,6 +43,9 @@ public:
 protected:
     UPROPERTY(meta = (BindWidget))
     UProgressBar* HealthProgressBar;
+
+    UPROPERTY(meta = (BindWidgetAnim), Transient)
+    UWidgetAnimation* DamageAnimation;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     float PercentColorThreshold = 0.3f;
