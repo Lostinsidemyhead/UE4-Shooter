@@ -77,5 +77,5 @@ void ABCBasePickup::GenerateRotationYaw()
 
 bool ABCBasePickup::CouldBeTaken() const
 {
-    return GetWorldTimerManager().IsTimerActive(RespawnTimerHandle);
+    return !GetWorldTimerManager().IsTimerActive(RespawnTimerHandle);
 }
